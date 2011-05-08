@@ -17,7 +17,6 @@ def tokenise(line):
     raw_tokens = shlex.split(line)
 
     temp = []
-    in_pair = False
     it = iter(raw_tokens)
     for token in it:
         if token.startswith('(') and token.endswith(')'):
