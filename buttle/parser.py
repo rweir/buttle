@@ -28,7 +28,12 @@ def tokenise(line):
             if token[1] == '[':
                 print "Found a pair in a multi"
                 next_token = next(it)
-                temp.append([token[2:], next_token[:-1]])
+                if next_token[-1] == ')':
+                    t = temp
+                    t.append([(token[2:], next_token[:-1])])
+                else:
+                    t = tokens
+                    t.append((token[2:], next_token[:-1]))
             else:
                 temp.append(token[1:])
         elif token.endswith(')'):
@@ -44,7 +49,7 @@ def tokenise(line):
                 t = tokens
             if token[0] == '[':
                 next_token = next(it)
-                t.append([token[1:], next_token[:-1]])
+                t.append((token[1:], next_token[:-2]))
             else:
                 t.append(token)
 
