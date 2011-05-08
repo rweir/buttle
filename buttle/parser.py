@@ -30,13 +30,15 @@ def tokenise(line):
 
     return tokens
 
+d = {'(': list, '[': tuple}
+
 def _parse(tokens):
     result = []
     while tokens:
         token = tokens.pop(0)
         if token in ('(', '['):
             tokens, _temp = _parse(tokens)
-            result.append(_temp)
+            result.append(d[token[0]](_temp))
         elif token in (')', ']'):
             continue
         else:
