@@ -31,8 +31,24 @@ class TokeniserTests(unittest.TestCase):
 class ParserTests(unittest.TestCase):
     def test_parse_pair(self):
         tokens = ['[', 'foo', 'bar', ']']
-        self.assertEqual(parse(tokens), [['foo', 'bar']])
+        self.assertEqual(parse(tokens), [('foo', 'bar')])
 
     def test_parse_multi(self):
         tokens = ['(', 'foo', ')']
         self.assertEqual(parse(tokens), [['foo']])
+
+    def test_parse_a_bit_complicated(self):
+        tokens = tokenise("""["Jane" "Doe" nil nil (["Mobile" "+61 4123 456 789"])]""")
+        self.assertEqual(parse(tokens), ['Jane', 'Doe', 'nil', 'nil', [("Mobile", "+61 4123 456 789")]])
+
+    def test_parse_multi_pairs(self):
+        tokens = ["(", "[", "foo", "bar", "]", ")", "(", "[", "baz", "bong", "]", ")"]
+        self.assertEqual(parse(tokens), [[("foo", "bar")], [("baz", "bong")]])
+
+    def test_parse_assoc_array(self):
+        tokens = ["(", "(", "foo", ".", "bar", ")", "(", "baz", ".", "bong", ")", ")"]
+        self.assertEqual(parse(tokens), [{'foo': 'bar', 'baz': 'bong'}])
+
+    def test_parse_full_tokenise(self):
+        line = """["Jane" "Doe" nil "Fake Pty Ltd" (["Mobile" "+61 4123 456 789"] ["Home" "61 2 9876 5432"]) nil ("someone@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
+        self.assertEqual(parse(tokenise(line)), ["Jane", "Doe", "nil", "Fake Pty Ltd", [('Mobile', "+61 4123 456 789"), ("Home", "61 2 9876 5432")], 'nil', ["someone@example.com"], {'creation-date': "2001-01-01", 'timestamp': "2002-02-02"}, 'nil'])

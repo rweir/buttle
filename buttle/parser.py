@@ -33,18 +33,28 @@ def tokenise(line):
 d = {'(': list, '[': tuple}
 
 def _parse(tokens):
+    in_assoc = False
+    was_in_assoc = False
     result = []
     while tokens:
         token = tokens.pop(0)
-        if token in ('(', '['):
-            tokens, _temp = _parse(tokens)
-            result.append(d[token[0]](_temp))
+        if token == '.':
+            in_assoc = True
+        elif token in ('(', '['):
+            tokens, _temp, was_in_assoc = _parse(tokens)
+            if not isinstance(_temp, dict):
+                result.append(d[token[0]](_temp))
+            else:
+                result.append(_temp)
         elif token in (')', ']'):
-            return tokens, result
+            if was_in_assoc:
+                result = dict(result)
+                was_in_assoc = False
+            return tokens, result, in_assoc
         else:
             result.append(token)
 
-    return tokens, result
+    return tokens, result, in_assoc
 
 def parse(tokens):
     return _parse(tokens)[1]
