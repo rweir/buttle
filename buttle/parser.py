@@ -15,19 +15,24 @@ def tokenise(line):
         raise ValueError("Doesn't end with a ']'!")
     line = line[1:-1]
     raw_tokens = shlex.split(line)
+    print "raw_tokens", raw_tokens
 
     temp = []
     it = iter(raw_tokens)
     for token in it:
         if token.startswith('(') and token.endswith(')'):
+            print "Found a boring group:"
             tokens.append([token[1:-1]])
         elif token.startswith('('):
+            print "Started a multi"
             if token[1] == '[':
+                print "Found a pair in a multi"
                 next_token = next(it)
                 temp.append([token[2:], next_token[:-1]])
             else:
                 temp.append(token[1:])
         elif token.endswith(')'):
+            print "Finsihed a multi"
             if temp:
                 temp.append(token[:-1])
                 tokens.append(temp)
