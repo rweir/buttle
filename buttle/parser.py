@@ -52,7 +52,6 @@ def parse_line(line):
 
     result = {}
 
-    line = line[1:-1]
     tokens = tokenise(line)
 
     result['firstname'] = tokens.pop(0)
