@@ -3,7 +3,7 @@ import shlex
 def tokenise(line):
     """Tokenises a line according to BBDB format rules.
 
-    In particular, respect ()."""
+    In particular, respect () and []."""
 
     tokens = []
     line = line.strip()
@@ -15,43 +15,18 @@ def tokenise(line):
         raise ValueError("Doesn't end with a ']'!")
     line = line[1:-1]
     raw_tokens = shlex.split(line)
-    print "raw_tokens", raw_tokens
 
-    temp = []
-    it = iter(raw_tokens)
-    for token in it:
-        if token.startswith('(') and token.endswith(')'):
-            print "Found a boring group:"
-            tokens.append([token[1:-1]])
-        elif token.startswith('('):
-            print "Started a multi"
-            if token[1] == '[':
-                print "Found a pair in a multi"
-                next_token = next(it)
-                if next_token[-1] == ')':
-                    t = temp
-                    t.append([(token[2:], next_token[:-1])])
-                else:
-                    t = tokens
-                    t.append((token[2:], next_token[:-1]))
-            else:
-                temp.append(token[1:])
-        elif token.endswith(')'):
-            print "Finsihed a multi"
-            if temp:
-                temp.append(token[:-1])
-                tokens.append(temp)
-                temp = []
+    tokens = []
+    while raw_tokens:
+        token = raw_tokens.pop(0)
+        if token[0] in ('(', '[') and len(token) > 1:
+            raw_tokens.insert(0, token[1:])
+            raw_tokens.insert(0, token[0])
+        elif token[-1] in (')', ']') and len(token) > 1:
+            raw_tokens.insert(0, token[-1])
+            raw_tokens.insert(0, token[:-1])
         else:
-            if temp:
-                t = temp
-            else:
-                t = tokens
-            if token[0] == '[':
-                next_token = next(it)
-                t.append((token[1:], next_token[:-2]))
-            else:
-                t.append(token)
+            tokens.append(token)
 
     return tokens
 
