@@ -43,9 +43,6 @@ def tokenise(line):
             else:
                 t.append(token)
 
-    print line
-    print raw_tokens
-    print tokens
     return tokens
 
 def parse_line(line):
@@ -80,9 +77,7 @@ def parse_line(line):
         for key, value in zip(*[it] * 2):
             key = key.lstrip('[')
             value = value.rstrip(']')
-            print key, value
             result['phone'][key] = value
-            print "phones", phones
 
     print "leftover", tokens
 
