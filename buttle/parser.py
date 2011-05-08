@@ -5,9 +5,7 @@ def tokenise(line):
 
     In particular, respect ()."""
 
-def parse_line(line):
-    """Parse the provided line and return a nested dict of values"""
-    # line = """["Jane" "Doe" nil nil (["Mobile" "+61 4123 456 789"]) nil ("someone@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
+    tokens = []
     line = line.strip()
     if line.startswith(';'):
         return
@@ -15,11 +13,40 @@ def parse_line(line):
         raise ValueError("Doesn't start with a '['!")
     if not line.endswith(']'):
         raise ValueError("Doesn't end with a ']'!")
+    line = line[1:-1]
+    raw_tokens = shlex.split(line)
+
+    temp = []
+    it = iter(raw_tokens)
+    for token in it:
+        if token.startswith('(') and token.endswith(')'):
+            tokens.append(token[1:-1])
+        elif token.startswith('('):
+            temp.append(token[1:])
+        elif token.endswith(')'):
+            if temp:
+                temp.append(token[:-1])
+                tokens.append(temp)
+                temp = []
+        else:
+            if temp:
+                temp.append(token)
+            else:
+                tokens.append(token)
+    print line
+    print raw_tokens
+    print tokens
+    return tokens
+
+def parse_line(line):
+    """Parse the provided line and return a nested dict of values"""
+    # firstname lastname aliases company phone something email metadata notes
+    # line = """["Jane" "Doe" nil nil (["Mobile" "+61 4123 456 789"]) nil ("someone@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
 
     result = {}
 
     line = line[1:-1]
-    tokens = shlex.split(line)
+    tokens = tokenise(line)
 
     result['firstname'] = tokens.pop(0)
     result['lastname'] = tokens.pop(0)
