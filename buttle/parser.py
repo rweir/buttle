@@ -17,12 +17,17 @@ def tokenise(line):
     raw_tokens = shlex.split(line)
 
     temp = []
+    in_pair = False
     it = iter(raw_tokens)
     for token in it:
         if token.startswith('(') and token.endswith(')'):
-            tokens.append(token[1:-1])
+            tokens.append([token[1:-1]])
         elif token.startswith('('):
-            temp.append(token[1:])
+            if token[1] == '[':
+                next_token = next(it)
+                temp.append([token[2:], next_token[:-1]])
+            else:
+                temp.append(token[1:])
         elif token.endswith(')'):
             if temp:
                 temp.append(token[:-1])
@@ -30,9 +35,15 @@ def tokenise(line):
                 temp = []
         else:
             if temp:
-                temp.append(token)
+                t = temp
             else:
-                tokens.append(token)
+                t = tokens
+            if token[0] == '[':
+                next_token = next(it)
+                t.append([token[1:], next_token[:-1]])
+            else:
+                t.append(token)
+
     print line
     print raw_tokens
     print tokens
