@@ -30,6 +30,23 @@ def tokenise(line):
 
     return tokens
 
+def _parse(tokens):
+    result = []
+    while tokens:
+        token = tokens.pop(0)
+        if token in ('(', '['):
+            tokens, _temp = _parse(tokens)
+            result.append(_temp)
+        elif token in (')', ']'):
+            continue
+        else:
+            result.append(token)
+
+    return tokens, result
+
+def parse(tokens):
+    return _parse(tokens)[1]
+
 def parse_line(line):
     """Parse the provided line and return a nested dict of values"""
     # firstname lastname aliases company phone something email metadata notes
