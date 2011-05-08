@@ -40,7 +40,7 @@ def _parse(tokens):
             tokens, _temp = _parse(tokens)
             result.append(d[token[0]](_temp))
         elif token in (')', ']'):
-            continue
+            return tokens, result
         else:
             result.append(token)
 
