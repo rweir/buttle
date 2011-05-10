@@ -6,7 +6,6 @@ def tokenise(line):
 
     In particular, respect () and []."""
 
-    tokens = []
     line = line.strip()
     if line.startswith(';'):
         return
