@@ -1,4 +1,5 @@
 import shlex
+from datetime import date
 
 def tokenise(line):
     """Tokenises a line according to BBDB format rules.
@@ -66,32 +67,22 @@ def parse_line(line):
 
     result = {}
 
-    tokens = tokenise(line)
+    it = parse(tokenise(line))
 
-    result['firstname'] = tokens.pop(0)
-    result['lastname'] = tokens.pop(0)
-    _ = tokens.pop(0)
-    result['company'] = tokens.pop(0)
+    result['firstname'] = it[0]
+    result['lastname'] = it[1]
+    _ = it[2]
+    result['company'] = it[3]
     if result['company'] == 'nil':
         result['company'] = None
+    result['phone'] = dict(it[4])
+    _ = it[5]
+    result['email'] = it[6][0]
+    result['random'] = it[7]
+    _ = it[8]
 
-    if tokens[0] == 'nil':
-        result['phone'] = {}
-    else:
-        if not tokens[0].startswith('(['):
-            raise ValueError("Misformed phone block")
-
-        phones = tokens[:next(index for index, item in enumerate(tokens) if item.endswith('])')) + 1]
-        phones[0] = phones[0][1:]
-        phones[-1] = phones[-1][:-1]
-        tokens = tokens[len(phones):]
-        it = iter(phones)
-        result['phone'] = {}
-        for key, value in zip(*[it] * 2):
-            key = key.lstrip('[')
-            value = value.rstrip(']')
-            result['phone'][key] = value
-
-    print "leftover", tokens
+    # handle specials
+    if 'creation-date' in result['random']:
+        result['random']['creation-date'] = date(*[int(x) for x in result['random']['creation-date'].split('-')])
 
     return result

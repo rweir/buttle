@@ -13,4 +13,4 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(r['phone']['Mobile'], '+61 4123 456 789')
         self.assertEqual(r['phone']['Home'], '61 2 9876 5432')
         self.assertEqual(r['email'], 'someone@example.com')
-        self.assertEqual(r['created'], date(2001, 01, 01))
+        self.assertEqual(r['random']['creation-date'], date(2001, 01, 01))
