@@ -67,6 +67,8 @@ def parse_line(line):
     result = {}
 
     it = parse(tokenise(line))
+    if not it:
+        return result
 
     result['firstname'] = it[0]
     result['lastname'] = it[1]

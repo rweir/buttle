@@ -14,3 +14,8 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(r['phone']['Home'], '61 2 9876 5432')
         self.assertEqual(r['email'], 'someone@example.com')
         self.assertEqual(r['random']['creation-date'], date(2001, 01, 01))
+
+    def test_parse_comment_line(self):
+        line = """;; this is a comment"""
+        r = parse_line(line)
+        self.assertEqual(r, {})
