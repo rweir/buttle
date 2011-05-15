@@ -100,7 +100,7 @@ def parse_line(line):
     else:
         result['phone'] = dict(it[4])
     _ = it[5]
-    result['email'] = it[6][0]
+    result['email'] = list(it[6])
     result['random'] = it[7]
     _ = it[8]
 

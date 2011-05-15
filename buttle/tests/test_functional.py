@@ -12,7 +12,7 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(r['company'], 'Fake Pty Ltd')
         self.assertEqual(r['phone']['Mobile'], '+61 4123 456 789')
         self.assertEqual(r['phone']['Home'], '61 2 9876 5432')
-        self.assertEqual(r['email'], 'someone@example.com')
+        self.assertEqual(r['email'], ['someone@example.com'])
         self.assertEqual(r['random']['creation-date'], date(2001, 01, 01))
 
     def test_parse_has_no_phone_number(self):
@@ -31,3 +31,9 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(r['firstname'], 'Jane')
         self.assertEqual(r['lastname'], '')
         self.assertEqual(r['company'], 'Fake Pty Ltd')
+
+    def test_parse_multiple_emails(self):
+        line = """["Jane" "" nil "Fake Pty Ltd" nil nil ("someone@example.com" "someoneelse@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
+        r = parse_line(line)
+        self.assertEqual(r['email'][0], 'someone@example.com')
+        self.assertEqual(r['email'][1], 'someoneelse@example.com')
