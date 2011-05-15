@@ -19,4 +19,5 @@ setup(name='Buttle',
         'Intended Audience :: Developers',
         ],
       packages=['buttle'],
+      install_requires=['icalendar'],
      )
