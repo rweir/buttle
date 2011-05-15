@@ -14,7 +14,7 @@ def tokenise(line):
     if not line.endswith(']'):
         raise ValueError("Doesn't end with a ']'!")
     line = line[1:-1]
-    raw_tokens = shlex.split(line)
+    raw_tokens = shlex.split(line, posix=False)
 
     tokens = []
     while raw_tokens:
@@ -28,6 +28,9 @@ def tokenise(line):
         else:
             tokens.append(token)
 
+    for index, token in enumerate(tokens):
+        if token.startswith('"') and token.endswith('"'):
+            tokens[index] = token[1:-1]
     return tokens
 
 d = {'(': list, '[': tuple}

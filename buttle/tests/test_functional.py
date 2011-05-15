@@ -24,3 +24,10 @@ class FunctionalTests(unittest.TestCase):
         line = """;; this is a comment"""
         r = parse_line(line)
         self.assertEqual(r, {})
+
+    def test_parse_has_no_surname(self):
+        line = """["Jane" "" nil "Fake Pty Ltd" nil nil ("someone@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
+        r = parse_line(line)
+        self.assertEqual(r['firstname'], 'Jane')
+        self.assertEqual(r['lastname'], '')
+        self.assertEqual(r['company'], 'Fake Pty Ltd')
