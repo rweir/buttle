@@ -108,4 +108,10 @@ def parse_line(line):
     if 'creation-date' in result['random']:
         result['random']['creation-date'] = date(*[int(x) for x in result['random']['creation-date'].split('-')])
 
+    if 'anniversary' in result['random']:
+        d = result['random']['anniversary']
+        if "\\n" in d:
+            d = d.split("\\n")[0]
+        result['random']['anniversary'] = date(*[int(x) for x in d.split('-')])
+
     return result
