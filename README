@@ -1,4 +1,5 @@
 Buttle
 ======
 
-A simple library for parsing BigBrother DataBase files.
+A simple library for parsing BigBrother DataBase files.  Also includes
+a couple of sample scripts that may be useful by themselves.
