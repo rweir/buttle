@@ -1,6 +1,6 @@
 import unittest
 
-from buttle.parser import tokenise, parse
+from buttle.parser import tokenise, parse, fix_up_from_shlex
 
 class TokeniserTests(unittest.TestCase):
     def test_trivial_tokenise(self):
@@ -52,3 +52,19 @@ class ParserTests(unittest.TestCase):
     def test_parse_full_tokenise(self):
         line = """["Jane" "Doe" nil "Fake Pty Ltd" (["Mobile" "+61 4123 456 789"] ["Home" "61 2 9876 5432"]) nil ("someone@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
         self.assertEqual(parse(tokenise(line)), ["Jane", "Doe", "nil", "Fake Pty Ltd", [('Mobile', "+61 4123 456 789"), ("Home", "61 2 9876 5432")], 'nil', ["someone@example.com"], {'creation-date': "2001-01-01", 'timestamp': "2002-02-02"}, 'nil'])
+
+class FixUpTests(unittest.TestCase):
+    def test_fix_empty(self):
+        self.assertEqual(fix_up_from_shlex([]), [])
+
+    def test_fix_ok(self):
+        self.assertEqual(fix_up_from_shlex([[1,2]]), [[1,2]])
+
+    def test_fix_single_element_broken(self):
+        self.assertEqual(fix_up_from_shlex([[1]]), [[1, ""]])
+
+    def test_fix_multi_element_broken(self):
+        self.assertEqual(fix_up_from_shlex([[1], [2]]), [[1, ""], [2, ""]])
+
+    def test_fix_multi_element_tuples_broken(self):
+        self.assertEqual(fix_up_from_shlex([(1,), (2,)]), [(1, ""), (2, "")])

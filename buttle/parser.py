@@ -32,6 +32,21 @@ def tokenise(line):
 
 d = {'(': list, '[': tuple}
 
+def fix_up_from_shlex(l):
+    """Fix up shlex's mapping of empty strings to nothingness.
+
+    ie parsing: "foo" ""
+    will lead to a single element in the list of tokens, the "" having
+    been thrown away.  When parsing things that end up as dicts, this
+    breaks dict()."""
+    result = []
+    for item in l:
+        if len(item) == 1:
+            result.append(item + type(item)([""]))
+        else:
+            result.append(item)
+    return result
+
 def _parse(tokens):
     in_assoc = False
     was_in_assoc = False
@@ -48,6 +63,7 @@ def _parse(tokens):
                 result.append(_temp)
         elif token in (')', ']'):
             if was_in_assoc:
+                result = fix_up_from_shlex(result)
                 result = dict(result)
                 was_in_assoc = False
             return tokens, result, in_assoc
