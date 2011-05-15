@@ -76,7 +76,11 @@ def parse_line(line):
     result['company'] = it[3]
     if result['company'] == 'nil':
         result['company'] = None
-    result['phone'] = dict(it[4])
+    print it
+    if it[4] == 'nil':
+        result['phone'] = {}
+    else:
+        result['phone'] = dict(it[4])
     _ = it[5]
     result['email'] = it[6][0]
     result['random'] = it[7]

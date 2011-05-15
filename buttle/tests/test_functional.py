@@ -15,6 +15,11 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(r['email'], 'someone@example.com')
         self.assertEqual(r['random']['creation-date'], date(2001, 01, 01))
 
+    def test_parse_has_no_phone_number(self):
+        line = """["Jane" "Doe" nil "Fake Pty Ltd" nil nil ("someone@example.com") ((creation-date . "2001-01-01") (timestamp . "2002-02-02")) nil]"""
+        r = parse_line(line)
+        self.assertEqual(r['phone'], {})
+
     def test_parse_comment_line(self):
         line = """;; this is a comment"""
         r = parse_line(line)
