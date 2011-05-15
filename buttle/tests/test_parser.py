@@ -7,6 +7,10 @@ class TokeniserTests(unittest.TestCase):
         line = """["Hi" "There"]"""
         self.assertEqual(tokenise(line), ['Hi', 'There'])
 
+    def test_trivial_tokenise_with_spaces(self):
+        line = """["Hi There"]"""
+        self.assertEqual(tokenise(line), ['Hi There'])
+
     def test_tokenise_with_multis_that_have_one_value(self):
         line = """[("foo")]"""
         self.assertEqual(tokenise(line), ['(', 'foo', ')'])
