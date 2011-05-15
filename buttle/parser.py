@@ -92,7 +92,6 @@ def parse_line(line):
     result['company'] = it[3]
     if result['company'] == 'nil':
         result['company'] = None
-    print it
     if it[4] == 'nil':
         result['phone'] = {}
     else:
